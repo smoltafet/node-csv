@@ -59,6 +59,13 @@ const init_state = function (options) {
     bufBytesStart: 0,
     castField: options.cast_function,
     commenting: false,
+    // Number of lines entirely made of a comment, counted when the
+    // comment starts; used by the `from_line` option which does not
+    // count comment lines
+    fullCommentLines: 0,
+    // Whether the current line contains any content (field characters
+    // or a quoted field) before a possible comment
+    lineHasContent: false,
     delimiterBufPrevious: undefined,
     delimiterDiscovered: false,
     // Current error encountered by a record

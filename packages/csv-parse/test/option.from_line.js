@@ -159,3 +159,96 @@ describe("Option `from_line`", function () {
     );
   });
 });
+
+describe("Option `from_line` with `comment`", function () {
+  it("does not count leading comment lines", function (next) {
+    parse(
+      dedent`
+        // Some
+        // Number of
+        // Comments
+        thing1=value1
+        thing2=value2
+        header1,header2,header3
+        value,value,value
+      `,
+      { comment: "//", from_line: 3 },
+      (err, records) => {
+        if (err) return next(err);
+        records.should.eql([
+          ["header1", "header2", "header3"],
+          ["value", "value", "value"],
+        ]);
+        next();
+      },
+    );
+  });
+
+  it("does not count comment lines between records", function (next) {
+    parse(
+      dedent`
+        a,b,c
+        # a comment
+        1,2,3
+        # another comment
+        4,5,6
+      `,
+      { comment: "#", from_line: 2 },
+      (err, records) => {
+        if (err) return next(err);
+        records.should.eql([
+          ["1", "2", "3"],
+          ["4", "5", "6"],
+        ]);
+        next();
+      },
+    );
+  });
+
+  it("counts a record preceded by comments from its non-comment position", function (next) {
+    parse(
+      "# comment\nx,y\n# comment\n1,2\n3,4",
+      { comment: "#", from_line: 3 },
+      (err, records) => {
+        if (err) return next(err);
+        records.should.eql([["3", "4"]]);
+        next();
+      },
+    );
+  });
+
+  it("does not count a comment in the middle of a line", function (next) {
+    parse(
+      "a,b # comment\n1,2\n3,4",
+      { comment: "#", from_line: 2 },
+      (err, records) => {
+        if (err) return next(err);
+        // the trailing comment does not make the first line a comment
+        // line, so `from_line: 2` starts at the second line
+        records.should.eql([
+          ["1", "2"],
+          ["3", "4"],
+        ]);
+        next();
+      },
+    );
+  });
+
+  it("honors header after comment lines", function (next) {
+    parse(
+      dedent`
+        # comment
+        # comment
+        skip,skip
+        a,b
+        1,2
+      `,
+      { comment: "#", from_line: 2, columns: true },
+      (err, records) => {
+        if (err) return next(err);
+        records.should.eql([{ a: "1", b: "2" }]);
+        next();
+      },
+    );
+  });
+});
