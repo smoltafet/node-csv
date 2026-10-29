@@ -60,8 +60,8 @@ const init_state = function (options) {
     castField: options.cast_function,
     commenting: false,
     // Number of lines entirely made of a comment, counted when the
-    // comment starts; used by `from_line` when the
-    // `from_line_skip_comments` option is enabled
+    // comment starts; used by `from_line` when its `skip_comments`
+    // property is enabled
     fullCommentLines: 0,
     // Whether the current line contains any content (field characters
     // or a quoted field) before a possible comment
@@ -70,7 +70,7 @@ const init_state = function (options) {
     delimiterDiscovered: false,
     // Current error encountered by a record
     error: undefined,
-    enabled: options.from_line === 1,
+    enabled: options.from_line.position === 1,
     escaping: false,
     escapeIsQuote:
       Buffer.isBuffer(options.escape) &&

@@ -172,14 +172,14 @@ export interface OptionsNormalized<T = string[], U = T> {
    */
   from: number;
   /**
-   * Start handling records from the requested line number.
+   * Start handling records from the requested line number. The
+   * `skip_comments` property controls whether lines entirely made of
+   * a comment are counted, defaults to false.
    */
-  from_line: number;
-  /**
-   * When true, lines entirely made of a comment are not counted by the
-   * `from_line` option, defaults to false.
-   */
-  from_line_skip_comments: boolean;
+  from_line: {
+    position: number;
+    skip_comments: boolean;
+  };
   /**
    * Convert values into an array of values when columns are activated and
    * when multiple columns of the same name are found.
@@ -350,14 +350,8 @@ export interface Options<T = string[], U = T> {
   /**
    * Start handling records from the requested line number.
    */
-  from_line?: OptionsNormalized["from_line"] | null | string;
-  fromLine?: OptionsNormalized["from_line"] | null | string;
-  /**
-   * When true, lines entirely made of a comment are not counted by the
-   * `from_line` option, defaults to false.
-   */
-  from_line_skip_comments?: OptionsNormalized["from_line_skip_comments"];
-  fromLineSkipComments?: OptionsNormalized["from_line_skip_comments"];
+  from_line?: OptionsNormalized["from_line"] | number | null | string;
+  fromLine?: OptionsNormalized["from_line"] | number | null | string;
   /**
    * Convert values into an array of values when columns are activated and
    * when multiple columns of the same name are found.

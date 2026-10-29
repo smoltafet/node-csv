@@ -74,7 +74,6 @@ const transform = function (original_options = {}) {
         delimiter_auto,
         encoding,
         from_line,
-        from_line_skip_comments,
         ltrim,
         max_record_size,
         raw,
@@ -350,17 +349,17 @@ const transform = function (original_options = {}) {
                 // Skip full comment line
               } else {
                 // Activate records emission if above from_line
-                // With `from_line_skip_comments`, full comment lines are
-                // not taken into account by `from_line`: it counts the
-                // lines which are not full comment lines
+                // With the `skip_comments` property of `from_line`,
+                // full comment lines are not taken into account: it
+                // counts the lines which are not full comment lines
                 if (
                   this.state.enabled === false &&
                   this.info.lines +
                     (this.state.wasRowDelimiter === true ? 1 : 0) -
-                    (from_line_skip_comments === true
+                    (from_line.skip_comments === true
                       ? this.state.fullCommentLines
                       : 0) >=
-                    from_line
+                    from_line.position
                 ) {
                   this.state.enabled = true;
                   this.__resetField();

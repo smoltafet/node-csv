@@ -160,7 +160,7 @@ describe("Option `from_line`", function () {
   });
 });
 
-describe("Option `from_line_skip_comments`", function () {
+describe("Option `from_line` as an object", function () {
   it("does not count leading comment lines", function (next) {
     parse(
       dedent`
@@ -172,7 +172,7 @@ describe("Option `from_line_skip_comments`", function () {
         header1,header2,header3
         value,value,value
       `,
-      { comment: "//", from_line: 3, from_line_skip_comments: true },
+      { comment: "//", from_line: { position: 3, skip_comments: true } },
       (err, records) => {
         if (err) return next(err);
         records.should.eql([
@@ -193,7 +193,7 @@ describe("Option `from_line_skip_comments`", function () {
         # another comment
         4,5,6
       `,
-      { comment: "#", from_line: 2, from_line_skip_comments: true },
+      { comment: "#", from_line: { position: 2, skip_comments: true } },
       (err, records) => {
         if (err) return next(err);
         records.should.eql([
@@ -208,7 +208,7 @@ describe("Option `from_line_skip_comments`", function () {
   it("counts a record preceded by comments from its non-comment position", function (next) {
     parse(
       "# comment\nx,y\n# comment\n1,2\n3,4",
-      { comment: "#", from_line: 3, from_line_skip_comments: true },
+      { comment: "#", from_line: { position: 3, skip_comments: true } },
       (err, records) => {
         if (err) return next(err);
         records.should.eql([["3", "4"]]);
@@ -245,9 +245,8 @@ describe("Option `from_line_skip_comments`", function () {
       `,
       {
         comment: "#",
-        from_line: 2,
+        from_line: { position: 2, skip_comments: true },
         columns: true,
-        from_line_skip_comments: true,
       },
       (err, records) => {
         if (err) return next(err);
@@ -259,9 +258,32 @@ describe("Option `from_line_skip_comments`", function () {
 
   it("validation", function () {
     (() => {
-      parse("", { from_line_skip_comments: "yes" }, () => {});
+      parse("", { from_line: { position: 2, skip_comments: "yes" } }, () => {});
     }).should.throw(
-      'Invalid Option: from_line_skip_comments must be a boolean, got "yes"',
+      'Invalid Option: from_line skip_comments must be a boolean, got "yes"',
+    );
+    (() => {
+      parse("", { from_line: { position: 0 } }, () => {});
+    }).should.throw(
+      'Invalid Option: from_line must be a positive integer greater than 0, got {"position":0}',
+    );
+    (() => {
+      parse("", { from_line: {} }, () => {});
+    }).should.throw("Invalid Option: from_line must be an integer, got {}");
+  });
+
+  it("counts comment lines when skip_comments is not set", function (next) {
+    parse(
+      "# a\n# b\nx,y\n1,2\n3,4",
+      { comment: "#", from_line: { position: 3 } },
+      (err, records) => {
+        if (err) return next(err);
+        records.should.eql([
+          ["1", "2"],
+          ["3", "4"],
+        ]);
+        next();
+      },
     );
   });
 
