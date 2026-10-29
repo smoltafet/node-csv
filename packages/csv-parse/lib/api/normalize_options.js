@@ -352,6 +352,19 @@ const normalize_options = function (opts) {
       );
     }
   }
+  // Normalize option `from_line_skip_comments`
+  if (typeof options.from_line_skip_comments === "boolean") {
+    // Great, nothing to do
+  } else if (
+    options.from_line_skip_comments === undefined ||
+    options.from_line_skip_comments === null
+  ) {
+    options.from_line_skip_comments = false;
+  } else {
+    throw new Error(
+      `Invalid Option: from_line_skip_comments must be a boolean, got ${JSON.stringify(options.from_line_skip_comments)}`,
+    );
+  }
   // Normalize options `ignore_last_delimiters`
   if (
     options.ignore_last_delimiters === undefined ||

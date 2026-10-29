@@ -60,8 +60,8 @@ const init_state = function (options) {
     castField: options.cast_function,
     commenting: false,
     // Number of lines entirely made of a comment, counted when the
-    // comment starts; used by the `from_line` option which does not
-    // count comment lines
+    // comment starts; used by `from_line` when the
+    // `from_line_skip_comments` option is enabled
     fullCommentLines: 0,
     // Whether the current line contains any content (field characters
     // or a quoted field) before a possible comment

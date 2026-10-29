@@ -72,6 +72,7 @@ describe("API Types", function () {
           "escape",
           "from",
           "from_line",
+          "from_line_skip_comments",
           "group_columns_by_name",
           "ignore_last_delimiters",
           "info",
@@ -299,6 +300,12 @@ describe("API Types", function () {
       const options: Options = {};
       options.from_line = 10;
       options.fromLine = 10;
+    });
+
+    it("from_line_skip_comments", function () {
+      const options: Options = {};
+      options.from_line_skip_comments = true;
+      options.fromLineSkipComments = true;
     });
 
     it("ignore_last_delimiters", function () {

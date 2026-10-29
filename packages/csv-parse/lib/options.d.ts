@@ -176,6 +176,11 @@ export interface OptionsNormalized<T = string[], U = T> {
    */
   from_line: number;
   /**
+   * When true, lines entirely made of a comment are not counted by the
+   * `from_line` option, defaults to false.
+   */
+  from_line_skip_comments: boolean;
+  /**
    * Convert values into an array of values when columns are activated and
    * when multiple columns of the same name are found.
    */
@@ -347,6 +352,12 @@ export interface Options<T = string[], U = T> {
    */
   from_line?: OptionsNormalized["from_line"] | null | string;
   fromLine?: OptionsNormalized["from_line"] | null | string;
+  /**
+   * When true, lines entirely made of a comment are not counted by the
+   * `from_line` option, defaults to false.
+   */
+  from_line_skip_comments?: OptionsNormalized["from_line_skip_comments"];
+  fromLineSkipComments?: OptionsNormalized["from_line_skip_comments"];
   /**
    * Convert values into an array of values when columns are activated and
    * when multiple columns of the same name are found.
